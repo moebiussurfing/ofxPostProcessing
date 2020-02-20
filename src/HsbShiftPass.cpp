@@ -34,7 +34,7 @@
 namespace itg
 {
     HsbShiftPass::HsbShiftPass(const ofVec2f& aspect, bool arb, float hueShift, float saturationShift, float brightnessShift) :
-        hueShift(hueShift), saturationShift(saturationShift), brightnessShift(brightnessShift), RenderPass(aspect, arb, "hsbshift")
+        hueShift(hueShift), saturationShift(saturationShift), brightnessShift(brightnessShift), RenderPass(aspect, arb, "HSBSHIFT")
     {
         string fragShaderSrc = STRINGIFY(
             uniform sampler2D tex;

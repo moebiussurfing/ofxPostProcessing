@@ -39,7 +39,7 @@ namespace itg
                        const ofVec4f& diffuseColor,
                        const ofVec4f& specularColor,
                        bool isSpecular, float shinyness) :
-        edgeThreshold(edgeThreshold), level(level), ambientColor(ambientColor), diffuseColor(diffuseColor), specularColor(specularColor), isSpecular(isSpecular), shinyness(shinyness), RenderPass(aspect, arb, "toon")
+        edgeThreshold(edgeThreshold), level(level), ambientColor(ambientColor), diffuseColor(diffuseColor), specularColor(specularColor), isSpecular(isSpecular), shinyness(shinyness), RenderPass(aspect, arb, "TOON")
     {
         string vertShaderSrc = STRINGIFY(
             varying vec3 v;

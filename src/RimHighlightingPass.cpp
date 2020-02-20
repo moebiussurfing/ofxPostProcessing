@@ -34,7 +34,7 @@
 namespace itg
 {
     RimHighlightingPass::RimHighlightingPass(const ofVec2f& aspect, bool arb) :
-        RenderPass(aspect, arb, "rimhighlighting")
+        RenderPass(aspect, arb, "RIMHIGHLIGHTING")
     {
         string vertShaderSrc = STRINGIFY(
                                          varying vec3 normal;

@@ -33,7 +33,7 @@
 
 namespace itg
 {
-    FxaaPass::FxaaPass(const ofVec2f& aspect, bool arb) : RenderPass(aspect, arb, "fxaa")
+    FxaaPass::FxaaPass(const ofVec2f& aspect, bool arb) : RenderPass(aspect, arb, "FXAA")
     {
         string fragShaderSrc = STRINGIFY(
              uniform SAMPLER_TYPE tDiffuse;

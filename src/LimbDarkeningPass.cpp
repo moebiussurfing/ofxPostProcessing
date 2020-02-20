@@ -39,7 +39,7 @@ namespace itg
                                          float brightness,
                                          const ofVec3f & startColor,
                                          const ofVec3f & endColor) :
-    radialScale(radialScale), brightness(brightness), startColor(startColor), endColor(endColor), RenderPass(aspect, arb, "limbdarkening")
+    radialScale(radialScale), brightness(brightness), startColor(startColor), endColor(endColor), RenderPass(aspect, arb, "LIMBDARKENING")
     {
         
         string fragShaderSrc = STRINGIFY(

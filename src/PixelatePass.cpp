@@ -34,7 +34,7 @@
 namespace itg
 {
     PixelatePass::PixelatePass(const ofVec2f& aspect, bool arb, const ofVec2f& resolution) :
-        resolution(resolution), RenderPass(aspect, arb, "pixelate")
+        resolution(resolution), RenderPass(aspect, arb, "PIXELATE")
     {
         string fragShaderSrc = STRINGIFY(
             uniform sampler2D tex;

@@ -34,7 +34,7 @@
 namespace itg
 {
     EdgePass::EdgePass(const ofVec2f& aspect, bool arb) :
-        RenderPass(aspect, arb, "edge"), hue(0.5f), saturation(0.f)
+        RenderPass(aspect, arb, "EDGE"), hue(0.5f), saturation(0.f)
     {
         string fragShaderSrc = STRINGIFY(
             uniform SAMPLER_TYPE tex;

@@ -35,7 +35,7 @@
 namespace itg
 {
     ConvolutionPass::ConvolutionPass(const ofVec2f& aspect, bool arb, const ofVec2f& imageIncrement, float sigma, unsigned kernelSize) :
-        imageIncrement(imageIncrement), RenderPass(aspect, arb, "convolution")
+        imageIncrement(imageIncrement), RenderPass(aspect, arb, "CONVOLUTION")
     {
         string vertShaderSrc = STRINGIFY(
             uniform vec2 imageIncrement;

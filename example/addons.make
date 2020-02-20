@@ -1,3 +1,2 @@
-ofxPostProcessing
 ofxGui
-
+ofxPostProcessing

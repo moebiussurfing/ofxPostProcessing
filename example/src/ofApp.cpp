@@ -3,7 +3,7 @@
 void ofApp::setup()
 {
     ofBackground(0);
-    ofSetFrameRate(60);
+    ofSetFrameRate(25);
     
     // Setup post-processing chain
     post.init(ofGetWidth(), ofGetHeight());
