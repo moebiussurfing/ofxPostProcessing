@@ -37,7 +37,7 @@ namespace itg
     LUTPass::LUTPass(const ofVec2f& aspect, bool arb) : RenderPass(aspect, arb, "LUT"), lut_tex(0)
     {
 	std:string pathLut = "Shaders/ofxPostProcessing/luts/6.cube";
-		ofLogError("ofxFboFxHelper") << "LUTPass.cpp: " << pathLut;
+		ofLogNotice("ofxFboFxHelper") << "LUTPass.cpp: loading LUt file: " << pathLut;
 		loadLUT(pathLut);
     }
 
@@ -57,6 +57,9 @@ namespace itg
 
         vector<RGB> lut;
         int LUT_3D_SIZE = 0;
+
+		//TODO:
+		//must check if file is ready to avoid crashes if lut file is not present!
 
         // load .cube file
         {
