@@ -34,7 +34,7 @@
 namespace itg
 {
 
-    LUTPass::LUTPass(const ofVec2f& aspect, bool arb) : RenderPass(aspect, arb, "lut"), lut_tex(0)
+    LUTPass::LUTPass(const ofVec2f& aspect, bool arb) : RenderPass(aspect, arb, "LUT"), lut_tex(0)
     {
     }
 

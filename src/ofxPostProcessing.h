@@ -55,6 +55,19 @@
 #include "GodRaysPass.h"
 #include "RimHighlightingPass.h"
 #include "LimbDarkeningPass.h"
+// Added by alptugan
+#include "FilmGrainLinesPass.hpp"
+#include "DotScreenPass.hpp"
+#include "DigitalGlitchPass.h"
+#include "FirePass.h"
+#include "BadTVPass.h"
+#include "ACESFilmicToneMappingPass.h"
+#include "NoisePass.h"
+#include "TiltShiftPass.h"
+#include "SuperPass.h"
+#include "GlitchAutomatedPass.h"
+#include "SpaceColorMovePass.h"
+#include "DitherPass.h"
 
 typedef itg::PostProcessing ofxPostProcessing;
 

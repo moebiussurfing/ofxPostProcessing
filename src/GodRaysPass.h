@@ -46,7 +46,7 @@ namespace itg
         
         void render(ofFbo& readFbo, ofFbo& writeFbo, ofTexture& depth);
         
-        void setLightPositionOnScreen(const ofVec3f & val) { lightPositionOnScreen = val; }
+        void setLightPositionOnScreen(const glm::vec3 & val) { lightPositionOnScreen = val; }
         const ofVec3f getlightPositionOnScreen() { return lightPositionOnScreen; }
         
         void setLightDirDOTviewDir(float val) { lightDirDOTviewDir = val; }

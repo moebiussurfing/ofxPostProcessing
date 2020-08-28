@@ -34,7 +34,7 @@
 namespace itg
 {
     KaleidoscopePass::KaleidoscopePass(const ofVec2f& aspect, bool arb, float segments) :
-        segments(segments), RenderPass(aspect, arb, "kaleido")
+        segments(segments), RenderPass(aspect, arb, "KALEIODOSCOPE")
     {
         string fragShaderSrc = STRINGIFY(
             uniform sampler2D tex;

@@ -52,8 +52,12 @@ namespace itg
         void debugDraw();
         
         bool hasArbShader() { return true; }
+        void setBlurXY(float _x, float _y);
+
         
     private:
+        ofVec2f _aspect;
+        bool _arb;
         ConvolutionPass::Ptr xConv;
         ConvolutionPass::Ptr yConv;
         

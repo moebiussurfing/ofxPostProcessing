@@ -34,8 +34,11 @@
 
 namespace itg
 {
-    BloomPass::BloomPass(const ofVec2f& aspect, bool arb, const ofVec2f& xBlur, const ofVec2f& yBlur, unsigned resolution, bool aspectCorrect) : RenderPass(aspect, arb, "bloom")
+    BloomPass::BloomPass(const ofVec2f& aspect, bool arb, const ofVec2f& xBlur, const ofVec2f& yBlur, unsigned resolution, bool aspectCorrect) : RenderPass(aspect, arb, "BLOOM")
     {
+        _aspect = aspect;
+        _arb = arb;
+        
         currentReadFbo = 0;
         if (resolution != ofNextPow2(resolution)) ofLogWarning() << "Resolution " << resolution << " is not a power of two, using " << ofNextPow2(resolution);
         
@@ -59,6 +62,11 @@ namespace itg
         s.useDepth = true;
         
         for (int i = 0; i < 2; ++i) fbos[i].allocate(s);
+    }
+    
+    void BloomPass::setBlurXY(float _x, float _y) {
+        xConv = ConvolutionPass::Ptr(new ConvolutionPass(_aspect, _arb, ofVec2f(_x,0)));
+        yConv = ConvolutionPass::Ptr(new ConvolutionPass(_aspect, _arb, (_aspect.x / _aspect.y) * ofVec2f(0,_y)));
     }
     
     void BloomPass::allocateSelectiveGlow(unsigned w, unsigned h)
