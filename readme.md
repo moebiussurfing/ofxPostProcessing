@@ -1,4 +1,9 @@
 # ofxPostProcessing
+I've added additional filter effects and manager gui to easily to adjust effect parameters.
+![Screen Shot](PostProcessingManager.jpg)
+
+------------------
+
 
 This openFrameworks addon gives you an easy way of putting together a chain of GLSL post-processing effects.
 
