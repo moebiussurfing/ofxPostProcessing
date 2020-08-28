@@ -66,6 +66,20 @@ At the moment, it comes with the following effects (some ported from other sourc
 * Fake subsurface scattering
 * Many others, please see src directory
 
+**Plus 12 more effects are added to ofxPostProcessing addon**
+* FilmGrainLinesPass
+* DotScreenPass
+* DigitalGlitchPass
+* FirePass
+* BadTVPass
+* ACESFilmicToneMappingPass
+* NoisePass
+* TiltShiftPass
+* SuperPass
+* GlitchAutomatedPass
+* SpaceColorMovePass
+* DitherPass
+
 ## Usage
 
 In your OF app declare an instance of **ofxPostProcessing**...
