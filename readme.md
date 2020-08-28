@@ -2,6 +2,39 @@
 I've added additional filter effects and manager gui to easily to adjust effect parameters.
 ![Screen Shot](PostProcessingManager.jpg)
 
+## ofxPostProcessingManager Usage
+See the example project in **ofApp.h**;
+
+```#include "ofxPostProcessingManager.h"```
+
+Declare object as follows;
+
+```ofxPostProcessingManager manager;```
+
+
+In setup();
+
+```manager.setup(ofGetWidth(), ofGetHeight());```
+
+
+In update();
+
+```manager.updateValues();```
+
+
+In draw();
+
+```
+ // begin scene to post process if you have cam.
+ // if not leave empty
+    manager.begin(cam);
+    
+    // draw your content
+
+    // end scene and draw
+    manager.end();
+```
+
 ------------------
 
 
