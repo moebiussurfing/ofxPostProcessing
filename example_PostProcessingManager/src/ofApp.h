@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxDC_Utilities.h"
 #include "ofxPostProcessingManager.h"
 
 #define NUM_BOXES 100
@@ -25,6 +26,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     ofxPostProcessingManager manager;
+    ofxDC_Utilities notifier;
     ofEasyCam cam;
     
     ofLight light;
@@ -35,4 +37,5 @@ class ofApp : public ofBaseApp{
     ofVboMesh boxMesh;
     
     bool hideGui;
+    bool automateEffects;
 };

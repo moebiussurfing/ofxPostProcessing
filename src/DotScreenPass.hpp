@@ -12,7 +12,7 @@
 
 
 #include "RenderPass.h"
-#include "ofShader.h"
+//#include "ofShader.h"
 
 namespace itg
 {
@@ -22,7 +22,7 @@ namespace itg
         
         typedef shared_ptr<DotScreenPass> Ptr;
         
-        DotScreenPass(const ofVec2f& aspect, bool arb, ofVec2f tSize = ofVec2f(256, 256), ofVec2f center = ofVec2f(0.5, 0.5), float angle = 1.57f, float scale = 1.0f);
+        DotScreenPass(const ofVec2f& aspect, bool arb, ofVec2f tSize = ofVec2f(1000, 1000), ofVec2f center = ofVec2f(0.5, 0.5), float angle = 1.57f, float scale = 1.0f);
         
         void render(ofFbo& readFbo, ofFbo& writeFbo);
         

@@ -43,13 +43,18 @@ namespace itg
     public:
         typedef shared_ptr<FxaaPass> Ptr;
     
-        FxaaPass(const ofVec2f& aspect, bool arb);
+        FxaaPass(const ofVec2f& aspect, bool arb, float divMin = 128.0, float divMul = 8.0, float spanMax = 8.0);
         
         void render(ofFbo& readFbo, ofFbo& writeFbo);
         
         bool hasArbShader() { return true; }
         
+        void setSpanMax(float spanMax) { this->spanMax = spanMax;}
+        void setDivMin(float divMin) { this->divMin = divMin;}
+        void setDivMul(float divMul) { this->divMul = divMul;}
+        
     private:
         ofShader shader;
+        float spanMax, divMul, divMin;
     };
 }

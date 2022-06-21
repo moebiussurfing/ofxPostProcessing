@@ -6,7 +6,7 @@
 //
 
 #include "DotScreenPass.hpp"
-#include "ofMain.h"
+//#include "ofMain.h"
 
 namespace itg
 {

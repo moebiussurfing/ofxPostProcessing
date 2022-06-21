@@ -36,7 +36,9 @@ namespace itg
     RimHighlightingPass::RimHighlightingPass(const ofVec2f& aspect, bool arb) :
         RenderPass(aspect, arb, "RIMBLIGHTING")
     {
-        string vertShaderSrc = STRINGIFY(
+        string vertShaderSrc = "\n#version 120\n";
+        vertShaderSrc += STRINGIFY(
+                                         
                                          varying vec3 normal;
                                          varying vec3 sides;
                                          varying vec2 v_texCoord;
@@ -59,6 +61,8 @@ namespace itg
                                          varying vec3 sides;
                                          varying vec2 v_texCoord;
                                          uniform sampler2D myTexture;
+                                         uniform vec3 col;
+                                         uniform float intensityThres;
                                          varying vec4 v_color;
                                          
                                          void main()
@@ -69,11 +73,14 @@ namespace itg
             intensity = dot(sides,n);
             
             gl_FragColor = texture2D(myTexture, v_texCoord);
-            if (intensity >= 64.0)
+            if (intensity >= intensityThres)
             {
-                gl_FragColor.b = gl_FragColor.b / 1.5;
+                /*gl_FragColor.b = gl_FragColor.b / 1.5;
                 gl_FragColor.r = gl_FragColor.r * 1.5;
-                gl_FragColor.g = gl_FragColor.g * 1.25;
+                gl_FragColor.g = gl_FragColor.g * 1.25;*/
+                gl_FragColor.b = gl_FragColor.b * col.x;
+                gl_FragColor.r = gl_FragColor.r / col.y;
+                gl_FragColor.g = gl_FragColor.g / col.z;
             }
             else
             {
@@ -82,10 +89,21 @@ namespace itg
         }
         );
         
+        col = glm::vec3(2.9, 1.3, 1.3);
+        intensityThres = 64;
+        
         shader.setupShaderFromSource(GL_VERTEX_SHADER, vertShaderSrc);
         shader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragShaderSrc);
         shader.linkProgram();
 
+    }
+    
+    void RimHighlightingPass::setFloatColor(glm::vec3 col) {
+        this->col = col;
+    }
+    
+    void RimHighlightingPass::setThres(float val) {
+        this->intensityThres = val;
     }
     
     void RimHighlightingPass::render(ofFbo& readFbo, ofFbo& writeFbo)
@@ -94,6 +112,8 @@ namespace itg
         
         shader.begin();
         shader.setUniformTexture("myTexture", readFbo.getTexture(), 0);
+        shader.setUniform3f("col", col);
+        shader.setUniform1f("intensityThres", intensityThres);
         
         texturedQuad(0, 0, writeFbo.getWidth(), writeFbo.getHeight());
         

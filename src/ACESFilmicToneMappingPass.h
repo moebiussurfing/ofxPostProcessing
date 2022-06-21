@@ -9,9 +9,9 @@
 #define ACESFilmicToneMappingPass_h
 
 
-#include "ofMain.h"
+//#include "ofMain.h"
 #include "RenderPass.h"
-#include "ofShader.h"
+//#include "ofShader.h"
 
 /*
  source : https://github.com/mrdoob/three.js/blob/master/examples/js/shaders/ACESFilmicToneMappingShader.js

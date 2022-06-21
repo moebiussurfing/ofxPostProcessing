@@ -9,7 +9,7 @@
 #define DitherPass_h
 
 #include "RenderPass.h"
-#include "ofShader.h"
+//#include "ofShader.h"
 
 namespace itg
 {

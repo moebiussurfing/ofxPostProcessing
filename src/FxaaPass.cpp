@@ -33,19 +33,26 @@
 
 namespace itg
 {
-    FxaaPass::FxaaPass(const ofVec2f& aspect, bool arb) : RenderPass(aspect, arb, "FXAA")
+    FxaaPass::FxaaPass(const ofVec2f& aspect, bool arb, float divMin, float divMul, float spanMax) : divMin(divMin), divMul(divMul), spanMax(spanMax), RenderPass(aspect, arb, "FXAA")
     {
         string fragShaderSrc = STRINGIFY(
              uniform SAMPLER_TYPE tDiffuse;
              uniform vec2 resolution;
-             
+             uniform float divMin;  // 128.
+             uniform float divMul;  // 8.
+             uniform float spanMax; // 8.0
+                                         
              varying vec2 vUv;
              
-             const float FXAA_REDUCE_MIN = 1.0/128.0;
-             const float FXAA_REDUCE_MUL = 1.0/8.0;
-             const float FXAA_SPAN_MAX = 8.0;
+             float FXAA_REDUCE_MIN;
+             float FXAA_REDUCE_MUL;
+             float FXAA_SPAN_MAX;
              
              void main() {
+                 
+                 FXAA_REDUCE_MIN = 1.0 / divMin;
+                 FXAA_REDUCE_MUL = 1.0 / divMul;
+                 FXAA_SPAN_MAX = spanMax;
                  
                  vec3 rgbNW = TEXTURE_FN( tDiffuse, ( gl_FragCoord.xy + vec2( -1.0, -1.0 ) ) * resolution ).xyz;
                  vec3 rgbNE = TEXTURE_FN( tDiffuse, ( gl_FragCoord.xy + vec2( 1.0, -1.0 ) ) * resolution ).xyz;
@@ -122,7 +129,11 @@ namespace itg
         
         shader.begin();
         
+        
         shader.setUniformTexture("tDiffuse", readFbo.getTexture(), 0);
+        shader.setUniform1f("divMul", divMul);
+        shader.setUniform1f("divMin", divMin);
+        shader.setUniform1f("spanMax", spanMax);
         if (arb) shader.setUniform2f("resolution", 1.f, 1.f);
         else shader.setUniform2f("resolution", 1.f / writeFbo.getWidth(), 1.f / writeFbo.getHeight());
         
@@ -131,4 +142,5 @@ namespace itg
         shader.end();
         writeFbo.end();
     }
+
 }

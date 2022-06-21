@@ -7,6 +7,8 @@ void ofApp::setup(){
     //setup manager
     manager.setup(ofGetWidth(), ofGetHeight());
 
+    // Load Settings
+    manager.loadSettings();
     // Setup box positions
     for (unsigned i = 0; i < NUM_BOXES; ++i)
     {
@@ -25,6 +27,13 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
+
+
+    if(notifier.notifyPerSecond(0.5) && automateEffects) {
+        manager.disableAll();
+        manager.switchFX(int(ofRandom(manager.getEffectNum())));
+    }
+
     manager.updateValues();
 }
 
@@ -54,14 +63,42 @@ void ofApp::draw(){
     
     ofDisableDepthTest();
     
-    if(!hideGui)
+    if(!hideGui) {
         manager.drawGui(ofGetWidth() - 220, 0);
+    }else{
+        // There is a kind of buggy issue on MAC.
+        // Drawing the GUI out of the window.
+        // Otherwise FPS draws continously
+        manager.hideGui();
+    }
+
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if(key == 'g')
+    if(key == 'd')
+        manager.disableAll();
+
+    else if(key == '1')
+        manager.loadSettings("scene1.json");
+
+    else if(key == '2')
+        manager.loadSettings("scene2.json");
+
+    else if(key == '3')
+        manager.loadSettings("scene3.json");
+
+    else if(key == 'h')
         hideGui = !hideGui;
+
+    else if(key == 'r') {
+        manager.disableAll();
+        int randId = int(ofRandom(manager.getEffectNum()));
+        manager.switchFX(randId);
+    }
+
+    else if(key == 'a')
+        automateEffects = !automateEffects;
 }
 
 //--------------------------------------------------------------

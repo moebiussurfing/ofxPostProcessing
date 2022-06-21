@@ -44,8 +44,12 @@ namespace itg
         RimHighlightingPass(const ofVec2f& aspect, bool arb);
         
         void render(ofFbo& readFbo, ofFbo& writeFbo);
-        
+        void setFloatColor(glm::vec3 col);
+        void setThres(float val);
     private:
         ofShader shader;
+        glm::vec3 col;
+        float intensityThres;
+    
     };
 }

@@ -9,7 +9,7 @@
 #define FilmGrainLinesPass_hpp
 
 #include "RenderPass.h"
-#include "ofShader.h"
+//#include "ofShader.h"
 
 namespace itg
 {
@@ -47,7 +47,8 @@ namespace itg
         float getCount() { return sCount; }
         void setCount(float v) { sCount = v; }
         
-        bool setGrayScale(int v) {grayscale = v;}
+        void setGrayScale(float v) {grayscale = v;}
+        float getGrayScale() {return grayscale;}
     private:
         
         ofShader shader;

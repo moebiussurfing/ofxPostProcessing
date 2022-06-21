@@ -32,7 +32,7 @@
 #pragma once
 
 #include "RenderPass.h"
-#include "ofCamera.h"
+//#include "ofCamera.h"
 
 namespace itg
 {

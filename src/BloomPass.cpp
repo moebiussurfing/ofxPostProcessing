@@ -30,7 +30,7 @@
  *
  */
 #include "BloomPass.h"
-#include "ofMain.h"
+//#include "ofMain.h"
 
 namespace itg
 {

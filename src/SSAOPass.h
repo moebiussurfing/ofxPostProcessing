@@ -32,7 +32,6 @@
 #pragma once
 
 #include "RenderPass.h"
-#include "ofShader.h"
 
 namespace itg
 {

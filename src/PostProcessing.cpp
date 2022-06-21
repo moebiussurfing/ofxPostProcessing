@@ -30,7 +30,7 @@
  *
  */
 #include "PostProcessing.h"
-#include "ofMain.h"
+//#include "ofMain.h"
 
 namespace itg
 {
@@ -41,6 +41,9 @@ namespace itg
         this->arb = arb;
         
         ofFbo::Settings s;
+        s.numSamples = 4;
+        //s.internalformat = GL_RGBA32F_ARB;
+        //
         
         if (arb)
         {
@@ -58,13 +61,24 @@ namespace itg
         // no need to use depth for ping pongs
         for (int i = 0; i < 2; ++i)
         {
+            pingPong[i].clear();
             pingPong[i].allocate(s);
+            pingPong[i].begin();
+            ofClear(0,0);
+            pingPong[i].end();
         }
         
+        raw.clear();
         s.useDepth = true;
-        s.depthStencilInternalFormat = GL_DEPTH_COMPONENT24;
+        s.depthStencilInternalFormat = GL_DEPTH_COMPONENT32;
         s.depthStencilAsTexture = true;
+        s.numSamples = 0;
+        //
+        
         raw.allocate(s);
+        raw.begin();
+        ofClear(0,0);
+        raw.end();
         
         numProcessedPasses = 0;
         currentReadFbo = 0;

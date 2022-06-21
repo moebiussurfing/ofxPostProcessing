@@ -8,9 +8,9 @@
 #ifndef BadTVPass_h
 #define BadTVPass_h
 
-#include "ofMain.h"
+//#include "ofMain.h"
 #include "RenderPass.h"
-#include "ofShader.h"
+//#include "ofShader.h"
 
 /*
  source : https://github.com/felixturner/bad-tv-shader

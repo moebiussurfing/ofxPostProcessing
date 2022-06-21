@@ -8,9 +8,9 @@
 #ifndef GlitchAutomatedPass_h
 #define GlitchAutomatedPass_h
 
-#include "ofMain.h"
+//#include "ofMain.h"
 #include "RenderPass.h"
-#include "ofShader.h"
+//#include "ofShader.h"
 
 /*
  source implemented from : https://www.shadertoy.com/view/MtXBDs
@@ -31,9 +31,14 @@ namespace itg
             // ofTexture & texture1, ofTexture & texture2,
             
             string vertShaderSrc = STRINGIFY(
+                                             varying vec2 vUv;
                                              void main()
                                              {
-                                                 gl_Position = ftransform();
+                                                 //gl_Position = ftransform();
+                                                 gl_TexCoord[0] = gl_MultiTexCoord0;
+                                                 vUv = gl_TexCoord[0].st;
+                                                 // The following one also works
+                                                 gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
 
                                              }
                                              );
@@ -44,6 +49,7 @@ namespace itg
                                              uniform float iTime;
                                              uniform float AMT; // 0 - 1
                                              uniform float SPEED; // 0 - 1
+                                             varying vec2 vUv;
                                              
                                              //2D (returns 0 - 1)
                                              float random2d(vec2 n) {
@@ -63,16 +69,16 @@ namespace itg
                                              void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
                                                 
                                                 float time = floor(iTime * SPEED * 60.0);
-                                                vec2 uv = fragCoord.xy / iResolution.xy;
+                                                vec2 uv = vUv;
                                                 
                                                 //copy orig
                                                 vec3 outCol = texture2D(tDiffuse, uv).rgb;
                                                 
                                                 //randomly offset slices horizontally
-                                                float maxOffset = AMT/2.0;
-                                                for (float i = 0.0; i < 10.0 * AMT; i += 1.0) {
-                                                    float sliceY = random2d(vec2(time , 2345.0 + float(i)));
-                                                    float sliceH = random2d(vec2(time , 9035.0 + float(i))) * 0.25;
+                                                float maxOffset = 0.0;
+                                                for (float i = 0.0; i < 4.0 * AMT; i += 1.0) {
+                                                    float sliceY = random2d(vec2(time , 2345.0 + float(i))) * 0.25;
+                                                    float sliceH = random2d(vec2(time , 9035.0 + float(i))) * 0.5;
                                                     float hOffset = randomRange(vec2(time , 9625.0 + float(i)), -maxOffset, maxOffset);
                                                     vec2 uvOff = uv;
                                                     uvOff.x += hOffset;
@@ -118,7 +124,7 @@ namespace itg
             
             
             shader.setUniformTexture("tDiffuse", readFbo.getTexture(), 0);
-            shader.setUniform2f("iResolution", ofGetWidth()*1.5, ofGetHeight()*1.5);
+            shader.setUniform2f("iResolution", ofGetWidth(), ofGetHeight());
             shader.setUniform1f("iTime", ofGetElapsedTimef());
             shader.setUniform1f("SPEED", speed);
             shader.setUniform1f("AMT", amt);

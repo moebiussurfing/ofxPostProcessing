@@ -30,36 +30,44 @@
  *
  */
 #pragma once
-
-#include "BloomPass.h"
-#include "ConvolutionPass.h"
-#include "DofPass.h"
-#include "DofAltPass.h"
-#include "EdgePass.h"
-#include "FxaaPass.h"
-#include "KaleidoscopePass.h"
-#include "NoiseWarpPass.h"
-#include "PixelatePass.h"
 #include "PostProcessing.h"
 #include "RenderPass.h"
-#include "LUTPass.h"
-#include "ContrastPass.h"
-#include "SSAOPass.h"
-#include "HorizontalTiltShifPass.h"
-#include "VerticalTiltShifPass.h"
-#include "RGBShiftPass.h"
-#include "FakeSSSPass.h"
-#include "ZoomBlurPass.h"
-#include "BleachBypassPass.h"
-#include "ToonPass.h"
+
+#include "FxaaPass.h"
 #include "GodRaysPass.h"
-#include "RimHighlightingPass.h"
 #include "LimbDarkeningPass.h"
+#include "SSAOPass.h"
+#include "ZoomBlurPass.h"
+#include "KaleidoscopePass.h"
+#include "RGBShiftPass.h"
+#include "BloomPass.h"
+//#include "ConvolutionPass.h"
+//#include "DofPass.h"
+//#include "DofAltPass.h"
+//#include "EdgePass.h"
+
+
+#include "NoiseWarpPass.h"
+#include "PixelatePass.h"
+
+//#include "LUTPass.h"
+//#include "ContrastPass.h"
+
+//#include "HorizontalTiltShifPass.h"
+//#include "VerticalTiltShifPass.h"
+
+//#include "FakeSSSPass.h"
+
+//#include "BleachBypassPass.h"
+//#include "ToonPass.h"
+
+
+
 // Added by alptugan
 #include "FilmGrainLinesPass.hpp"
 #include "DotScreenPass.hpp"
 #include "DigitalGlitchPass.h"
-#include "FirePass.h"
+//#include "FirePass.h"
 #include "BadTVPass.h"
 #include "ACESFilmicToneMappingPass.h"
 #include "NoisePass.h"
@@ -68,6 +76,10 @@
 #include "GlitchAutomatedPass.h"
 #include "SpaceColorMovePass.h"
 #include "DitherPass.h"
+#include "ColorInvert.h"
+#include "RimHighlightingPass.h"
+//#include "SlantShiftPass.h"
+//#include "FogPass.h"
 
 typedef itg::PostProcessing ofxPostProcessing;
 

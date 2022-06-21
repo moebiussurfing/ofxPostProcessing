@@ -6,7 +6,7 @@
 //
 
 #include "FilmGrainLinesPass.hpp"
-#include "ofMain.h"
+//#include "ofMain.h"
 
 namespace itg
 {

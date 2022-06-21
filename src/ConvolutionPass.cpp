@@ -30,7 +30,7 @@
  *
  */
 #include "ConvolutionPass.h"
-#include "ofMain.h"
+//#include "ofMain.h"
 
 namespace itg
 {
