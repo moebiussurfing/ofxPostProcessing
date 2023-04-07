@@ -93,8 +93,12 @@ private:
     void loadPreset();
     ofParameter<void> btnLoad = {"LOAD SETTINGS"};
     ofParameter<void> btnSave = {"SAVE PRESET"};
+    ofParameter<bool> btnRandomize = {"RANDOM FX", false}; // PICK RANDOM FX
+    ofParameter<float> sliderTime = {"FX SWITCH PERIOD", 0.1, 0.001 , 1}; // RANDOM SWITCH TIME
+
     //ofParameter<string> btnFileName = {"PRESET NAME", "..."};
     ofParameter<void> gdisableAll = {"DISABLE ALL FX"};
+
     void gdisableAllHandler();
 
     vector<ofxToggle> gBtnEffSwtich;

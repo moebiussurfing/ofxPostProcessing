@@ -184,6 +184,18 @@ void ofxPostProcessingManager::switchFX(int postId) {
 //---------------------------------------
 void ofxPostProcessingManager::updateValues(){
 
+
+    //---------------------------------------
+    // RANDOMIZE EFFECT
+    //---------------------------------------
+    if(btnRandomize)
+    {
+        if(utils.notifyPerSecond(sliderTime)) {
+            disableAll();
+            switchFX(floor(ofRandom(getEffectNum())));
+        }
+    }
+
     // 2- DOF
     /*if(post[2]->getEnabled())
      {
@@ -441,9 +453,14 @@ void ofxPostProcessingManager::setupGui(){
     fileName = "fxSettings.json";
     gui.setDefaultTextPadding(6);
     gui.setDefaultWidth(220);
-    gui.setDefaultHeight(14);
+    gui.setDefaultHeight(10);
+    gui.loadFont("VCR_OSD_MONO_1.001.ttf", 8, false);
     gui.setup("POST PROCESSING FX", fileName);
     gui.add(gDebugDraw.setup("ENABLE DEBUG DRAW", false));
+
+    gui.add(btnRandomize);
+    gui.add(sliderTime);
+    gui.add(btnSave);
     gui.add(gdisableAll);
     gui.add(btnLoad);
     //gui.add(btnFileName );

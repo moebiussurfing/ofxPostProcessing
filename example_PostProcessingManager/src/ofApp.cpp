@@ -28,12 +28,6 @@ void ofApp::setup(){
 void ofApp::update(){
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 
-
-    if(notifier.notifyPerSecond(0.5) && automateEffects) {
-        manager.disableAll();
-        manager.switchFX(int(ofRandom(manager.getEffectNum())));
-    }
-
     manager.updateValues();
 }
 
@@ -97,8 +91,6 @@ void ofApp::keyPressed(int key){
         manager.switchFX(randId);
     }
 
-    else if(key == 'a')
-        automateEffects = !automateEffects;
 }
 
 //--------------------------------------------------------------

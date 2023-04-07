@@ -37,5 +37,4 @@ class ofApp : public ofBaseApp{
     ofVboMesh boxMesh;
     
     bool hideGui;
-    bool automateEffects;
 };
