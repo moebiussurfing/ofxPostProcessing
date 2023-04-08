@@ -1,5 +1,18 @@
 # ofxPostProcessing
 I've added additional filter effects and manager gui to easily to adjust effect parameters.
+
+## Features
+- [x] GUI added
+- [x] GUI: Random FX on button click
+- [x] GUI: Randomize Effects continously in a time interval
+- [x] GUI: Random FX SWITCH PERIOD: Set the time interval between fx switch
+- [x] GUI: Load a preset setup (json)
+- [x] GUI: Save the current preset setup (json)
+- [x] GUI: Edit FX shader parameters on the fly
+- [ ] Better GUI approach without using an external lib.
+- [ ] Add support for ofGLProgrammableRenderer with version 150 shaders
+- [ ] More FX
+
 ![Screen Shot](PostProcessingManager.jpg)
 
 ## ofxPostProcessingManager Usage
@@ -111,8 +124,3 @@ post.begin(cam);
 <RENDERING CODE>
 post.end();
 ```
-
-## TODO
-* Add support for ofGLProgrammableRenderer with version 150 shaders
-* More FX
-* OpenGL ES, it's based around power of two textures so it should be fairly quick to get working. 
