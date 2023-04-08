@@ -48,7 +48,7 @@
         },
         "FXAA_GROUP": {
             "REDUCE_MIN_DIV": "128",
-            "REDUCE_MULT_DIV": "8",
+            "REDUCE_MULT_DIV": "16",
             "SPAN_MAX": "8"
         },
         "GLITCH_AUTOMATED_GROUP": {

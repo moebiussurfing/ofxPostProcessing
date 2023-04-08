@@ -1,5 +1,8 @@
 .DS_Store
 */.DS_Store
 example/bin
+example_PostProcessingManager/*
+!example_PostProcessingManager/src
+!example_PostProcessingManager/bin/data/*
 */*/xcuserdata
 */*/*/xcuserdata

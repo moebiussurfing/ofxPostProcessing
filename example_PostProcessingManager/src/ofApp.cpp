@@ -28,6 +28,7 @@ void ofApp::setup(){
 void ofApp::update(){
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 
+    // update manager
     manager.updateValues();
 }
 
