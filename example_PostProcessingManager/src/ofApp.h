@@ -25,9 +25,9 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-        // ofxpostprocessing manager
-    ofxPostProcessingManager manager;
-    ofxDC_Utilities notifier;
+
+    ofxPostProcessingManager manager; // ofxpostprocessing manager
+    ofxDC_Utilities notifier;           // Utilities class
     ofEasyCam cam;
     
     ofLight light;
