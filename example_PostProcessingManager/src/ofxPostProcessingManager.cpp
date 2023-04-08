@@ -451,9 +451,9 @@ void ofxPostProcessingManager::gdisableAllHandler() {
 //---------------------------------------
 void ofxPostProcessingManager::setupGui(){
     fileName = "fxSettings.json";
-    gui.setDefaultTextPadding(6);
+    gui.setDefaultTextPadding(7);
     gui.setDefaultWidth(220);
-    gui.setDefaultHeight(10);
+    gui.setDefaultHeight(12);
     gui.loadFont("VCR_OSD_MONO_1.001.ttf", 8, false);
     gui.setup("POST PROCESSING FX", fileName);
     gui.add(gDebugDraw.setup("ENABLE DEBUG DRAW", false));
