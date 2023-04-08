@@ -60,7 +60,7 @@ NB This addon uses the branch setup as OF itself, the stable branch corresponds 
 
 https://github.com/neilmendoza/ofxPostProcessing/tree/stable
 
-## Features
+## Updated FX shaders
 
 At the moment, it comes with the following effects (some ported from other sources and some original) that I'll gradually add to over time:
 
