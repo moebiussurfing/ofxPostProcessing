@@ -3,6 +3,6 @@
 example/bin
 example_PostProcessingManager/*
 !example_PostProcessingManager/src
-!example_PostProcessingManager/bin/data/*
+!example_PostProcessingManager/bin/data
 */*/xcuserdata
 */*/*/xcuserdata
