@@ -41,7 +41,7 @@ namespace itg
         this->arb = arb;
         
         ofFbo::Settings s;
-        s.numSamples = 4;
+        //s.numSamples = 4;
         //s.internalformat = GL_RGBA32F_ARB;
         //
         
@@ -72,9 +72,9 @@ namespace itg
         s.useDepth = true;
         s.depthStencilInternalFormat = GL_DEPTH_COMPONENT32;
         s.depthStencilAsTexture = true;
-        s.numSamples = 0;
+        //s.numSamples = 4;
         //
-        
+
         raw.allocate(s);
         raw.begin();
         ofClear(0,0);
