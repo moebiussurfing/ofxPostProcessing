@@ -40,12 +40,13 @@ namespace itg
     public:
         typedef shared_ptr<PixelatePass> Ptr;
         
-        PixelatePass(const ofVec2f& aspect, bool arb, const ofVec2f& resolution = ofVec2f(100.f, 100.f));
+        PixelatePass(const glm::vec2& aspect, bool arb, const glm::vec2& resolution = glm::vec2(100.f, 100.f));
         
         void render(ofFbo& readFbo, ofFbo& writeFbo);
+        void setResolution(int x, int y);
         
     private:
         ofShader shader;
-        ofVec2f resolution;
+        glm::vec2 resolution;
     };
 }

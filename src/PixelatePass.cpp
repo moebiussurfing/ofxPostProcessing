@@ -33,7 +33,7 @@
 
 namespace itg
 {
-    PixelatePass::PixelatePass(const ofVec2f& aspect, bool arb, const ofVec2f& resolution) :
+    PixelatePass::PixelatePass(const glm::vec2& aspect, bool arb, const glm::vec2& resolution) :
         resolution(resolution), RenderPass(aspect, arb, "PIXELATE")
     {
         string fragShaderSrc = STRINGIFY(
@@ -56,6 +56,11 @@ namespace itg
 #endif
     }
     
+    void PixelatePass::setResolution(int x, int y) {
+        resolution.x = x;
+        resolution.y = y;
+    }
+
     void PixelatePass::render(ofFbo& readFbo, ofFbo& writeFbo)
     {
         writeFbo.begin();

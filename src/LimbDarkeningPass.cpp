@@ -33,12 +33,12 @@
 
 namespace itg
 {
-    LimbDarkeningPass::LimbDarkeningPass(const ofVec2f& aspect,
+    LimbDarkeningPass::LimbDarkeningPass(const glm::vec2& aspect,
                                          bool arb,
                                          float radialScale,
                                          float brightness,
-                                         const ofVec3f & startColor,
-                                         const ofVec3f & endColor) :
+                                         const glm::vec3 & startColor,
+                                         const glm::vec3 & endColor) :
     radialScale(radialScale), brightness(brightness), startColor(startColor), endColor(endColor), RenderPass(aspect, arb, "LIMBDARKENING")
     {
         
@@ -84,10 +84,10 @@ namespace itg
         shader.begin();
         shader.setUniformTexture("myTexture", readFbo.getTexture(), 0);
         shader.setUniform1f("fAspect", 1);
-        shader.setUniform3f("startColor", 1, 1, 1);
-        shader.setUniform3f("endColor", 0, 0, 0);
-        shader.setUniform1f("radialScale", 1.2);
-        shader.setUniform1f("brightness", 2.5);
+        shader.setUniform3f("startColor", startColor);
+        shader.setUniform3f("endColor", endColor);
+        shader.setUniform1f("radialScale", radialScale);
+        shader.setUniform1f("brightness", brightness);
         
         texturedQuad(0, 0, writeFbo.getWidth(), writeFbo.getHeight());
         

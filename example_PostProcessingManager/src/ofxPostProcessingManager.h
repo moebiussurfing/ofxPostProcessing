@@ -9,13 +9,13 @@ class ofxPostProcessingManager{
 
 public:
 
-    void setup(int w, int h);
+    void setup(int w, int h, string fontName="", int fontSize = 8);
 
     void updateValues();
 
     void drawGui(int x, int y);
     void hideGui();
-    void setupGui();
+    void setupGui(string fontName, int fontSize);
 
     void begin();
     void begin(ofCamera& cam);
@@ -69,6 +69,8 @@ public:
 
     RimHighlightingPass::Ptr rimbShift;
 
+    DofPass::Ptr dof;
+
     // Becareful when enabling a pass...
     //ContrastPass::Ptr contrastShift;
     //FogPass::Ptr fogFilter;
@@ -91,6 +93,7 @@ private:
     void processOpenFileSelection(ofFileDialogResult openFileResult);
     void savePresetPressed();
     void loadPreset();
+    void paramChangedEvent(ofAbstractParameter &e);
     ofParameter<void> btnLoad = {"LOAD SETTINGS"};
     ofParameter<void> btnSave = {"SAVE PRESET"};
     ofParameter<bool> btnRandomize = {"RANDOM FX", false}; // PICK RANDOM FX
@@ -102,60 +105,70 @@ private:
     void gdisableAllHandler();
 
     vector<ofxToggle> gBtnEffSwtich;
+    vector<ofParameterGroup> gEffectGroups; // Parameter grouplar tanımlanacak
     void gBtnEffSwtichHandler(bool & val);
 
     string fileName;
 
 
-    // FXAA
+    // 0 - FXAA
     ofParameterGroup gFxaaGroup;
     ofxFloatSlider gFxaaDivMin;
     ofxFloatSlider gFxaaDivMul;
     ofxFloatSlider gFxaaSpanMax;
 
-    // BLOOM
+    // 1 - BLOOM
     ofParameterGroup gBloomGroup;
-    ofxFloatSlider gBloomBlurX, gBloomBlurY;
+    ofxFloatSlider gBloomBlurX, gBloomBlurY; 
 
-    // DOF
-    /*ofParameterGroup gDofApertureGroup;
-    ofxFloatSlider gDofAperture, gDofMaxBlur, gDofFocus;
-    */
+    // 2 - KALEIDOSCOPE
+    ofParameterGroup gKaliGroup;
+    ofxFloatSlider gKaleiSegments;
 
-    // GODRAYS
+    // 3 - NOISEWRAP
+    ofParameterGroup gNoiseWrapGroup;
+    ofxFloatSlider gNoiseWrapAmp, gNoiseWrapFreq, gNoiseWrapSpeed;
+
+    // 4- PIXELATE
+    ofParameterGroup gPixelateGroup;
+    ofxIntSlider gPixelateX, gPixelateY;
+
+    // 5- GODRAYS
     ofParameterGroup gGodRaysGroup;
     ofxFloatSlider gGodRaysLightDotView;
     ofxVec3Slider gLightPositionOnScreen;
 
-    // SSAO
+    // 6- LIMB DARKENING
+    ofParameterGroup gLimb;
+    ofxVec3Slider gLimbStartColor, gLimbEndColor;
+    ofxFloatSlider gLimbRadScale, gLimbBrightness;
+
+    // 7- SSAO
     ofParameterGroup gSsaoGroup;
     ofxFloatSlider gSsaoAoClamp, gSsaoLumInfluence, gSsaocameraNear, gSsaocameraFar, gSsaofogNear, gSsaofogFar;
     ofxToggle gSsaofogEnabled, gSsaoonlyAO;
 
-    // ZOOM BLUR
+    // 8- ZOOM BLUR
     ofParameterGroup gZoomBlurGroup;
     ofxVec2Slider gZoomCenterXY;
     ofxFloatSlider gZoomClamp, gZoomDecay, gZoomWeight, gZoomDensity, gZoomExposure;
 
-    // KALEIDOSCOPE
-    ofParameterGroup gKaliGroup;
-    ofxFloatSlider gKaleiSegments;
 
-    // RGB SHIFT PASS
+    // 9- RGB SHIFT PASS
     ofParameterGroup gRGBGroup;
     ofxFloatSlider gRGBAmount, gRGBAngle;
 
-    // FILM GRAIN
+    // 10- FILM GRAIN
     ofParameterGroup gFilmGrainGroup;
     ofxFloatSlider gFilmGrainLnIntensity,gFilmGrainLsIntensity, gFilmGrainLCount;
     ofxToggle gFilmGrainLGrayScale;
 
-    // DOT SCREEN
+    // 11- DOT SCREEN
     ofParameterGroup gDotScreenGroup;
     ofxFloatSlider gDotScrAngle, gDotScrScale;
     ofxVec2Slider gDotScrSize, gDotScrCenter;
 
-    // GLITCH
+    // 12- GLITCH
     ofParameterGroup gGlicthGroup;
     ofxFloatSlider gGlitchAmount, gGlitchAngle, gGlitchSeed, gGlitchSeedX, gGlitchSeedY, gGlitchDistX, gGlitchDistY, gGlitchCol;
     ofxToggle gGlitchByp;
@@ -163,51 +176,56 @@ private:
     // LAVA FIRE
 
 
-    // BAD TV PASS
+    // 13- BAD TV PASS
     ofParameterGroup gBadTVGroup;
     ofxFloatSlider gBadTvDist,gBadTvDist2,gBadTvSpeed,gBadTvRoll;
 
-    // colorACES
+    // 14- colorACES
     ofParameterGroup gcolorACESGroup;
     ofxFloatSlider gcolorACESExp;
 
-    // Noise Grain
+    // 15- Noise Grain
     ofParameterGroup gNoiseGroup;
     ofxFloatSlider gNoiseSpeed, gNoiseAmt;
 
-    // TiltShift
+    // 16- TiltShift
     ofParameterGroup gTiltShiftGroup;
     ofxFloatSlider gTiltFocus, gTitltRange, gTiltOffset, gTiltStrength;
 
-    // SuperShader
+    // 17- SuperShader
     ofParameterGroup gSupGroup;
     ofxFloatSlider gSupGlowAmt, gSupGlowSize, gSupVigOff, gSupVigDark, gSupBri, gSupCont, gSupSat, gRGBShfAmt;
 
-    // Glitch Automated
+    // 18- Glitch Automated
     ofParameterGroup gGliAutoGroup;
     ofxFloatSlider gGliAutoSpeed,gGliAutoAmt;
 
-    // Space Color
+    // 19- Space Color
     ofParameterGroup gSpaceColorGroup;
     ofxFloatSlider gSpaceColorSpeed, gSpaceColorOpacity;
 
-    // Dither
+    // 20- Dither
     ofParameterGroup gDitherGroup;
     ofxFloatSlider gDitherScale;
 
-    // Color Invert Strobber
+    // 21- Color Invert Strobber
     ofParameterGroup gStrobberGroup;
     ofxFloatSlider gStrobberVolume;
     ofxFloatSlider gStrobberPhase;
 
-    // SLANT SHIFT PASS
+    // 22- SLANT SHIFT PASS
     ofParameterGroup gSlantShiftGroup;
     ofxFloatSlider gSlantShiftVolume;
 
-    // RIMB LIGHT SHIFT
+    // 23- RIMB LIGHT SHIFT
     ofParameterGroup gRimbLightGroup;
     ofxVec3Slider gRimbCol;
     ofxFloatSlider gRimbThres;
+
+    // 24- DOF
+    ofParameterGroup gDofGroup;
+    ofxFloatSlider gDofAperture, gDofMaxBlur, gDofFocus;
+
 
     // FOG PASS
     /*ofParameterGroup gFogGroup;
@@ -238,6 +256,5 @@ private:
 //19-gSpaceColor
 //20-Dither Pass
 //21-Color Invert Strobber
-//22-SlantShift Pass
-//23-Rimblight
-//24-FogFilter
+//22-Rimblight
+//23-FogFilter

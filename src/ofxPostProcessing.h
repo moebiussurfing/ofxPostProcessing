@@ -42,8 +42,8 @@
 #include "RGBShiftPass.h"
 #include "BloomPass.h"
 //#include "ConvolutionPass.h"
-//#include "DofPass.h"
-//#include "DofAltPass.h"
+#include "DofPass.h"
+#include "DofAltPass.h"
 //#include "EdgePass.h"
 
 

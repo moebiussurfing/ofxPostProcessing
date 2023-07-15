@@ -5,14 +5,14 @@ void ofApp::setup(){
     ofSetBackgroundColor(0);
     
     //setup manager
-    manager.setup(ofGetWidth(), ofGetHeight());
+    manager.setup(ofGetWidth(), ofGetHeight(), "VCR_OSD_MONO_1.001.ttf", 8);
 
     // Load Settings
     manager.loadSettings();
     // Setup box positions
     for (unsigned i = 0; i < NUM_BOXES; ++i)
     {
-        posns.push_back(ofVec3f(ofRandom(-300, 300), ofRandom(-300, 300), ofRandom(-300, 300)));
+        posns.push_back(glm::vec3(ofRandom(-300, 300), ofRandom(-300, 300), ofRandom(-300, 300)));
         cols.push_back(ofColor::fromHsb(255 * i / (float)NUM_BOXES, 255, 255, 255));
     }
     
@@ -35,12 +35,12 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     // setup gl state
-    ofEnableDepthTest();
-    light.enable();
+
     
     // begin scene to post process
     manager.begin(cam);
-    
+    ofEnableDepthTest();
+    light.enable();
     // draw boxes
     for (unsigned i = 0; i < posns.size(); ++i)
     {
@@ -52,14 +52,14 @@ void ofApp::draw(){
     }
     
     ofDrawAxis(100);
-    
+    ofDisableDepthTest();
     // end scene and draw
     manager.end();
     
-    ofDisableDepthTest();
+
     
     if(!hideGui) {
-        manager.drawGui(ofGetWidth() - 220, 0);
+        manager.drawGui(ofGetWidth() - manager.getGUIWidth(), 0);
     }else{
         // There is a kind of buggy issue on MAC.
         // Drawing the GUI out of the window.

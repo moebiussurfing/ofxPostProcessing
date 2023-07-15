@@ -33,7 +33,7 @@ class ofApp : public ofBaseApp{
     ofLight light;
     
     // boxes
-    vector<ofVec3f> posns;
+    vector<glm::vec3> posns;
     vector<ofColor> cols;
     ofVboMesh boxMesh;
     

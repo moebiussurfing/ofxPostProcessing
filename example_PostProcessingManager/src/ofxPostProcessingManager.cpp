@@ -63,25 +63,23 @@ void ofxPostProcessingManager::loadSettings(std::string fileName) {
     }else{
         gui.loadFromFile(fileName);
     }
-    ofLog() << "------------------------------------------------";
-    ofLog() << "Settings loaded as " << fileName;
+    ofLogNotice() << "------------------------------------------------";
+    ofLogNotice() << "Settings loaded as " << fileName;
+    ofLogNotice() << "------------------------------------------------";
 }
 
 //---------------------------------------
-void ofxPostProcessingManager::setup(int w, int h){
+void ofxPostProcessingManager::setup(int w, int h, string f, int fSize){
 
     post.init(w, h);
 
     reInit();
 
     //---------
-    setupGui();
+    setupGui(f, fSize);
 }
 
 void ofxPostProcessingManager::reInit() {
-
-    //2-dof
-    //dof = post.createPass<DofPass>();
 
     //6-EdgePass
     //post.createPass<EdgePass>()->setEnabled(false);
@@ -166,6 +164,9 @@ void ofxPostProcessingManager::reInit() {
     // 22-Rimblight Pass
     rimbShift = post.createPass<RimHighlightingPass>();
 
+    // 23-DOF -> Depth of Field
+    dof = post.createPass<DofPass>();
+
     //22-SlantShift Pass
     //slantShift = post.createPass<SlantShiftPass>();
     // 24-Fog Filter Pass
@@ -195,17 +196,6 @@ void ofxPostProcessingManager::updateValues(){
             switchFX(floor(ofRandom(getEffectNum())));
         }
     }
-
-    // 2- DOF
-    /*if(post[2]->getEnabled())
-     {
-     dof->setAperture(gDofAperture);
-     dof->setMaxBlur(gDofMaxBlur);
-     dof->setFocus(gDofFocus);
-     }*/
-
-
-
     // 16- Lava Fire Pass
     //if(post[16]->getEnabled()) {
     //}
@@ -226,12 +216,14 @@ void ofxPostProcessingManager::updateValues(){
 
     // 3- NoiseWrap
     if(post[3]->getEnabled()) {
-
+        noiseWrap->setAmplitude(gNoiseWrapAmp);
+        noiseWrap->setFrequency(gNoiseWrapFreq);
+        noiseWrap->setSpeed(gNoiseWrapSpeed);
     }
 
     // 4- Pixelate
     if(post[4]->getEnabled()) {
-
+        pixelate->setResolution(gPixelateX, gPixelateY);
     }
 
     // 5- GOD Rays
@@ -242,7 +234,10 @@ void ofxPostProcessingManager::updateValues(){
 
     // 6- Limb Darkening
     if(post[6]->getEnabled()) {
-
+        limbDarkening->setBrightness(gLimbBrightness);
+        limbDarkening->setRadialScale(gLimbRadScale);
+        limbDarkening->setStartColor(gLimbStartColor);
+        limbDarkening->setEndColor(gLimbEndColor);
     }
 
     // 7- SSAO
@@ -284,10 +279,10 @@ void ofxPostProcessingManager::updateValues(){
 
     // 11- DotScreen Pass
     if(post[11]->getEnabled())  {
-        dotScreenPass->setSize(ofVec2f(gDotScrSize->x, gDotScrSize->y));
+        dotScreenPass->setSize(glm::vec2(gDotScrSize->x, gDotScrSize->y));
         dotScreenPass->setAgnle(gDotScrAngle);
         dotScreenPass->setScale(gDotScrScale);
-        dotScreenPass->setCenter(ofVec2f(gDotScrCenter->x, gDotScrCenter->y));
+        dotScreenPass->setCenter(glm::vec2(gDotScrCenter->x, gDotScrCenter->y));
     }
 
     // 12- Glitch Pass
@@ -380,6 +375,14 @@ void ofxPostProcessingManager::updateValues(){
         rimbShift->setFloatColor(gRimbCol);
     }
 
+    // 23- DOF
+    if(post[23]->getEnabled())
+     {
+        dof->setAperture(gDofAperture);
+        dof->setMaxBlur(gDofMaxBlur);
+        dof->setFocus(gDofFocus);
+     }
+
     // 24
     /*if(post[24]->getEnabled()) {
         fogFilter->setColor(gFogfogColor);
@@ -427,6 +430,17 @@ void ofxPostProcessingManager::end(){
 void ofxPostProcessingManager::gBtnEffSwtichHandler(bool & val) {
     for (int i = 0; i < post.size(); i++) {
         post[i]->setEnabled(gBtnEffSwtich[i]);
+        string name = gBtnEffSwtich[i].getName();//ofSplitString(gBtnEffSwtich[i].getName(), ".")[1];
+
+        if(gBtnEffSwtich[i] == true) {
+            gui.getGroup(name).setHeaderBackgroundColor(ofColor(0,200,0,150));
+            gui.getGroup(name).setBorderColor(ofColor(0,200,0,150));
+            gui.getGroup(name).setTextColor(ofColor(0,0,0,150));
+        }else{
+            gui.getGroup(name).setHeaderBackgroundColor(ofColor(0,0,0,100));
+            gui.getGroup(name).setBorderColor(ofColor(0,0,0,100));
+            gui.getGroup(name).setTextColor(ofColor(255,255,255,150));
+        }
     }
 }
 
@@ -449,18 +463,26 @@ void ofxPostProcessingManager::gdisableAllHandler() {
 }
 
 //---------------------------------------
-void ofxPostProcessingManager::setupGui(){
+void ofxPostProcessingManager::setupGui(string f, int fSize){
     fileName = "fxSettings.json";
+
+    ofFile file(f);
+    // Set the fill color
+    ofxGuiSetFillColor(ofColor(0,200,0,130));
     gui.setDefaultTextPadding(7);
     gui.setDefaultWidth(220);
     gui.setDefaultHeight(12);
-    gui.loadFont("VCR_OSD_MONO_1.001.ttf", 8, false);
+    if(f != "" && file.exists()) {
+        if(file.exists()) {
+            gui.loadFont(f, fSize, false);
+        }else{
+            ofLogError(__FUNCTION__) << "file " << f << " not found!";
+        }
+    }
     gui.setup("POST PROCESSING FX", fileName);
     gui.add(gDebugDraw.setup("ENABLE DEBUG DRAW", false));
-
     gui.add(btnRandomize);
     gui.add(sliderTime);
-    gui.add(btnSave);
     gui.add(gdisableAll);
     gui.add(btnLoad);
     //gui.add(btnFileName );
@@ -468,19 +490,9 @@ void ofxPostProcessingManager::setupGui(){
 
     for (int i = 0; i < post.size(); i++) {
         gBtnEffSwtich.push_back(ofxToggle());
-        gBtnEffSwtich[i].setup(ofToString(i) + "." + post[i]->getName(), false);
+        gBtnEffSwtich[i].setup(ofToString(i) + " " + post[i]->getName(), false);
         gBtnEffSwtich[i].addListener(this, &ofxPostProcessingManager::gBtnEffSwtichHandler);
     }
-
-    //2-dof
-    /*gDofApertureGroup.setName(dof->getName() + " GROUP");
-     gDofApertureGroup.add(gDofFocus.setup("Dof-Focus", 0.9, 0.0, 1.0)->getParameter());
-     gDofApertureGroup.add(gDofAperture.setup("Dof-Aperture", 0.2, 0.0, 1.0)->getParameter());
-     gDofApertureGroup.add(gDofMaxBlur.setup("Dof-MaxBlur", 0.05, 0.0, 1.0)->getParameter());
-     //gui.add(gDoDof.setup(dof->getName(), false));
-     gui.add(&gBtnEffSwtich[2]);
-     gui.add(gDofApertureGroup);
-     */
 
     //gui.add(gDoEdgePass.setup("EdgePass", false));
 
@@ -489,44 +501,68 @@ void ofxPostProcessingManager::setupGui(){
     // 16- Lava Fire
 
     //0-Fxaa
-    gFxaaGroup.setName(fxaa->getName() + " GROUP");
+    int cc = 0;
+    gFxaaGroup.setName(ofToString(cc) + " " + fxaa->getName());
+    gFxaaGroup.add(gBtnEffSwtich[0].getParameter());
     gFxaaGroup.add(gFxaaDivMin.setup("REDUCE MIN DIV", 128.0, 1.0, 512.0 )->getParameter());
     gFxaaGroup.add(gFxaaDivMul.setup("REDUCE MULT DIV", 8.0, 1.0, 128.0 )->getParameter());
     gFxaaGroup.add(gFxaaSpanMax.setup("SPAN MAX", 8.0, 1.0, 128.0 )->getParameter());
-    gui.add(&gBtnEffSwtich[0]);
-    gui.add(gFxaaGroup);
+    //gui.add(&gBtnEffSwtich[0]);
 
+    cc++;
     //1-Bloom
-    gBloomGroup.setName(bloomPass->getName() + " GROUP");
+    gBloomGroup.setName(ofToString(cc) + " " + bloomPass->getName());
+    gBloomGroup.add(gBtnEffSwtich[1].getParameter());
     gBloomGroup.add(gBloomBlurX.setup("Blur X", 0.000953125, 0, 0.01 )->getParameter());
     gBloomGroup.add(gBloomBlurY.setup("Blur Y", 0.000953125, 0, 0.01 )->getParameter());
-    gui.add(&gBtnEffSwtich[1]);
-    gui.add(gBloomGroup);
+    //gui.add(&gBtnEffSwtich[1]);
 
+    cc++;
     //2-Kaleidoscope
-    gKaliGroup.setName(kaleidoscope->getName() + " GROUP");
+    gKaliGroup.setName(ofToString(cc) + " " + kaleidoscope->getName());
+    gKaliGroup.add(gBtnEffSwtich[2].getParameter());
     gKaliGroup.add(gKaleiSegments.setup("Segments", 2.f, -20, 20)->getParameter());
-    gui.add(&gBtnEffSwtich[2]);
-    gui.add(gKaliGroup);
+    //gui.add(&gBtnEffSwtich[2]);
 
+    cc++;
     //3-Noisewarp
-    gui.add(&gBtnEffSwtich[3]);
+    gNoiseWrapGroup.setName(ofToString(cc) + " " + noiseWrap->getName());
+    gNoiseWrapGroup.add(gBtnEffSwtich[3].getParameter());
+    gNoiseWrapGroup.add(gNoiseWrapAmp.setup("Amplitude", 0.1, 0, 10)->getParameter());
+    gNoiseWrapGroup.add(gNoiseWrapFreq.setup("Frequency", 4.0, 0, 20)->getParameter());
+    gNoiseWrapGroup.add(gNoiseWrapSpeed.setup("Speed", 0.1, 0, 10)->getParameter());
+    //gui.add(&gBtnEffSwtich[3]);
 
+    cc++;
     // 4- Pixelate
-    gui.add(&gBtnEffSwtich[4]);
+    gPixelateGroup.setName(ofToString(cc) + " " + pixelate->getName());
+    gPixelateGroup.add(gBtnEffSwtich[4].getParameter());
+    gPixelateGroup.add(gPixelateX.setup("Horizontal", 100, 0, 1000)->getParameter());
+    gPixelateGroup.add(gPixelateY.setup("Vertical", 100, 0, 1000)->getParameter());
+    //gui.add(&gBtnEffSwtich[4]);
 
+    cc++;
     //5-GodRays
-    gGodRaysGroup.setName(godRays->getName() + " GROUP");
+    gGodRaysGroup.setName(ofToString(cc) + " " + godRays->getName());
+    gGodRaysGroup.add(gBtnEffSwtich[5].getParameter());
     gGodRaysGroup.add(gGodRaysLightDotView.setup("GodRays-Light", 0.3, 0.0, 1.0)->getParameter());
     gGodRaysGroup.add(gLightPositionOnScreen.setup("Light Position", glm::vec3(0), glm::vec3(0), glm::vec3(1))->getParameter());
-    gui.add(&gBtnEffSwtich[5]);
-    gui.add(gGodRaysGroup);
+    //gui.add(&gBtnEffSwtich[5]);
 
+    cc++;
     //6-LimbDarkening
-    gui.add(&gBtnEffSwtich[6]);
+    gLimb.setName(ofToString(cc) + " " + limbDarkening->getName());
+    gLimb.add(gBtnEffSwtich[6].getParameter());
+    //gLimb.add(gLimbBrightness.setup("Brightness", 2.5, 0, 10)->getParameter());
+    gLimb.add(gLimbRadScale.setup("Scale", 1.2, 0, 100)->getParameter());
+    gLimb.add(gLimbStartColor.setup("Begin Color", glm::vec3(1.), glm::vec3(0.), glm::vec3(1.))->getParameter());
+    gLimb.add(gLimbEndColor.setup("End Color", glm::vec3(0.), glm::vec3(0.), glm::vec3(1.))->getParameter());
+    //gui.add(&gBtnEffSwtich[6]);
 
+    cc++;
     //7-Ssao
-    gSsaoGroup.setName(ssao->getName() + " GROUP");
+    gSsaoGroup.setName(ofToString(cc) + " " + ssao->getName());
+    gSsaoGroup.add(gBtnEffSwtich[7].getParameter());
     gSsaoGroup.add(gSsaofogEnabled.setup("Enable Fog", false)->getParameter());
     gSsaoGroup.add(gSsaofogNear.setup("Fog Near", 1, 0, 2000)->getParameter());
     gSsaoGroup.add(gSsaofogFar.setup("Fog Far", 1000, 0, 2000)->getParameter());
@@ -535,49 +571,52 @@ void ofxPostProcessingManager::setupGui(){
     gSsaoGroup.add(gSsaoonlyAO.setup("Enable-Ao", false)->getParameter());
     gSsaoGroup.add(gSsaoAoClamp.setup("Ssao-AoClamp", 0.65, 0.0, 1.0)->getParameter());
     gSsaoGroup.add(gSsaoLumInfluence.setup("Ssao-LumInfluence", 0.25, 0.0, 1.0)->getParameter());
-    gui.add(&gBtnEffSwtich[7]);
-    gui.add(gSsaoGroup);
+    //gui.add(&gBtnEffSwtich[7]);
 
+    cc++;
     // 8- ZoomBlur
-    gZoomBlurGroup.setName(zoomBlur->getName() + " GROUP");
+    gZoomBlurGroup.setName(ofToString(cc) + " " + zoomBlur->getName());
+    gZoomBlurGroup.add(gBtnEffSwtich[8].getParameter());
     gZoomBlurGroup.add(gZoomCenterXY.setup("Zoom Center XY", glm::vec2(0.5, 0.5), glm::vec2(0, 0), glm::vec2(1, 1))->getParameter());
     //gui.add(gZoomClamp.setup("Clamp",1,0,1));
     //gui.add(gZoomDecay.setup("Decay",0.9,0,1));
     gZoomBlurGroup.add(gZoomWeight.setup("Weight",0.25,0,1)->getParameter());
     gZoomBlurGroup.add(gZoomDensity.setup("Density",0.25,0,1)->getParameter());
     gZoomBlurGroup.add(gZoomExposure.setup("Exposure",0.48,0,1)->getParameter());
-    gui.add(&gBtnEffSwtich[8]);
-    gui.add(gZoomBlurGroup);
+    //gui.add(&gBtnEffSwtich[8]);
 
+    cc++;
     // 9- RGB Pass
-    gRGBGroup.setName(rgbPass->getName() + " GROUP");
+    gRGBGroup.setName(ofToString(cc) + " " + rgbPass->getName());
+    gRGBGroup.add(gBtnEffSwtich[9].getParameter());
     gRGBGroup.add(gRGBAngle.setup("Angle", 0, 0, TWO_PI)->getParameter());
     gRGBGroup.add(gRGBAmount.setup("Amount", 0.005,0,1)->getParameter());
-    gui.add(&gBtnEffSwtich[9]);
-    gui.add(gRGBGroup);
+    //gui.add(&gBtnEffSwtich[9]);
 
+    cc++;
     // 10- FilmGrainLines Pass Params
-    gFilmGrainGroup.setName(filmGrainLinesPass->getName() + " GROUP");
+    gFilmGrainGroup.setName(ofToString(cc) + " " + filmGrainLinesPass->getName());
+    gFilmGrainGroup.add(gBtnEffSwtich[10].getParameter());
     gFilmGrainGroup.add(gFilmGrainLCount.setup("Count", 1096,1, 10000)->getParameter());
     gFilmGrainGroup.add(gFilmGrainLGrayScale.setup("GrayScale",false)->getParameter());
     gFilmGrainGroup.add(gFilmGrainLnIntensity.setup("N Intensity",0.5,0,1)->getParameter());
     gFilmGrainGroup.add(gFilmGrainLsIntensity.setup("S Intensity",0.5,0,1)->getParameter());
-    gui.add(&gBtnEffSwtich[10]);
-    gui.add(gFilmGrainGroup);
+    //gui.add(&gBtnEffSwtich[10]);
 
-
+    cc++;
     // 11- DotScreen Pass params
-    gDotScreenGroup.setName(dotScreenPass->getName() + " GROUP");
-    gDotScreenGroup.add(gDotScrCenter.setup("Center", ofVec2f(0.5), ofVec2f(0), ofVec2f(1.0,1.0))->getParameter());
-    gDotScreenGroup.add(gDotScrSize.setup("Size", ofVec2f(1000), ofVec2f(0), ofVec2f(1000))->getParameter());
+    gDotScreenGroup.setName(ofToString(cc) + " " + dotScreenPass->getName());
+    gDotScreenGroup.add(gBtnEffSwtich[11].getParameter());
+    gDotScreenGroup.add(gDotScrCenter.setup("Center", glm::vec2(0.5), glm::vec2(0), glm::vec2(1.0,1.0))->getParameter());
+    gDotScreenGroup.add(gDotScrSize.setup("Size", glm::vec2(2000), glm::vec2(0), glm::vec2(2000))->getParameter());
     gDotScreenGroup.add(gDotScrScale.setup("Scale",1.0,0,1)->getParameter());
     gDotScreenGroup.add(gDotScrAngle.setup("Angle",1.57,0,TWO_PI)->getParameter());
-    gui.add(&gBtnEffSwtich[11]);
-    gui.add(gDotScreenGroup);
+    //gui.add(&gBtnEffSwtich[11]);
 
-
+    cc++;
     // 12- Digital Glitch Pass Params
-    gGlicthGroup.setName(glitchPass->getName() + " GROUP");
+    gGlicthGroup.setName(ofToString(cc) + " " + glitchPass->getName());
+    gGlicthGroup.add(gBtnEffSwtich[12].getParameter());
     gGlicthGroup.add(gGlitchAmount.setup("Amount", 0.006, 0.00001, 0.1)->getParameter());
     gGlicthGroup.add(gGlitchByp.setup("Bypass", false)->getParameter());
     gGlicthGroup.add(gGlitchAngle.setup("Angle", 0.02, 0, TWO_PI)->getParameter());
@@ -587,44 +626,47 @@ void ofxPostProcessingManager::setupGui(){
     gGlicthGroup.add(gGlitchDistX.setup("Distortion X", 0.02, -1, 1)->getParameter());
     gGlicthGroup.add(gGlitchDistY.setup("Distortion Y", 0.02, -1, 1)->getParameter());
     gGlicthGroup.add(gGlitchCol.setup("Column", 0.03, 0, 1)->getParameter());
-    gui.add(&gBtnEffSwtich[12]);
-    gui.add(gGlicthGroup);
+    //gui.add(&gBtnEffSwtich[12]);
 
-
-
+    cc++;
     // 13- Bad TV Pass Params
-    gBadTVGroup.setName(badTv->getName() + " GROUP");
+    gBadTVGroup.setName(ofToString(cc) + " " + badTv->getName());
+    gBadTVGroup.add(gBtnEffSwtich[13].getParameter());
     gBadTVGroup.add(gBadTvDist.setup("Distortion 1", 3.0, 0.0, 20.0)->getParameter());
     gBadTVGroup.add(gBadTvDist2.setup("Distortion 2", 5.0, 0.0, 20.0)->getParameter());
     gBadTVGroup.add(gBadTvSpeed.setup("Speed", 3.0, 0.0, 20.0)->getParameter());
     gBadTVGroup.add(gBadTvRoll.setup("Roll Speed", 0.1, 0.0, 1.0)->getParameter());
-    gui.add(&gBtnEffSwtich[13]);
-    gui.add(gBadTVGroup);
+    //gui.add(&gBtnEffSwtich[13]);
 
+    cc++;
     // 14- Color ACES Filmic Filter Paramas
-    gcolorACESGroup.setName(colorACES->getName() + " GROUP");
+    gcolorACESGroup.setName(ofToString(cc) + " " + colorACES->getName());
+    gcolorACESGroup.add(gBtnEffSwtich[14].getParameter());
     gcolorACESGroup.add(gcolorACESExp.setup("Exposure", 1.0, 0.0, 1.0)->getParameter());
-    gui.add(&gBtnEffSwtich[14]);
-    gui.add(gcolorACESGroup);
+    //gui.add(&gBtnEffSwtich[14]);
 
+    cc++;
     // 15- Noise Grain Filter Params
-    gNoiseGroup.setName(noiseGrain->getName() + " GROUP");
+    gNoiseGroup.setName(ofToString(cc) + " " + noiseGrain->getName());
+    gNoiseGroup.add(gBtnEffSwtich[15].getParameter());
     gNoiseGroup.add(gNoiseAmt.setup("Amount", 0.128, 0, 1)->getParameter());
     gNoiseGroup.add(gNoiseSpeed.setup("Speed", 0.08, 0, 1)->getParameter());
-    gui.add(&gBtnEffSwtich[15]);
-    gui.add(gNoiseGroup);
+    //gui.add(&gBtnEffSwtich[15]);
 
+    cc++;
     // 16- Tilt Shift Filter Params
-    gTiltShiftGroup.setName(tiltShift->getName() + " GROUP");
+    gTiltShiftGroup.setName(ofToString(cc) + " " + tiltShift->getName());
+    gTiltShiftGroup.add(gBtnEffSwtich[16].getParameter());
     gTiltShiftGroup.add(gTiltFocus.setup("Focus", 0.35, 0, 1)->getParameter());
     gTiltShiftGroup.add(gTitltRange.setup("Range", 0.5, 0, 1)->getParameter());
     gTiltShiftGroup.add(gTiltOffset.setup("Offset", 0.05, 0, 1)->getParameter());
     gTiltShiftGroup.add(gTiltStrength.setup("Strength", 0.5, 0, 1)->getParameter());
-    gui.add(&gBtnEffSwtich[16]);
-    gui.add(gTiltShiftGroup);
+    //gui.add(&gBtnEffSwtich[16]);
 
+    cc++;
     // 17- SuperShader Filter Params
-    gSupGroup.setName(superShader->getName() + " GROUP");
+    gSupGroup.setName(ofToString(cc) + " " + superShader->getName());
+    gSupGroup.add(gBtnEffSwtich[17].getParameter());
     gSupGroup.add(gSupGlowAmt.setup("Glow Amount", 0.5, 0., 1.)->getParameter());
     gSupGroup.add(gSupGlowSize.setup("Glow Size", 4.0, 0., 20.)->getParameter());
     gSupGroup.add(gSupVigOff.setup("Vignette Offset", 1.0, 0., 1.)->getParameter());
@@ -633,47 +675,87 @@ void ofxPostProcessingManager::setupGui(){
     gSupGroup.add(gSupCont.setup("Contrast", 0.0, -1., 1.)->getParameter());
     gSupGroup.add(gSupSat.setup("Saturation", 0.0, 0., 1.)->getParameter());
     gSupGroup.add(gRGBShfAmt.setup("RGB Shift Amount", 0.01, 0., 1.)->getParameter());
-    gui.add(&gBtnEffSwtich[17]);
-    gui.add(gSupGroup);
+    //gui.add(&gBtnEffSwtich[17]);
 
+    cc++;
     // 18- Glitch Automated Filter Params
-    gGliAutoGroup.setName(glitchAuto->getName() + " GROUP");
+    gGliAutoGroup.setName(ofToString(cc) + " " + glitchAuto->getName());
+    gGliAutoGroup.add(gBtnEffSwtich[18].getParameter());
     gGliAutoGroup.add(gGliAutoSpeed.setup("Speed", 0.6, 0 , 1)->getParameter());
     gGliAutoGroup.add(gGliAutoAmt.setup("Amount", 0.2, 0 , 1)->getParameter());
-    gui.add(&gBtnEffSwtich[18]);
-    gui.add(gGliAutoGroup);
+    //gui.add(&gBtnEffSwtich[18]);
 
+    cc++;
     // 19- Space Color
-    gSpaceColorGroup.setName(spaceColor->getName() + " GROUP");
+    gSpaceColorGroup.setName(ofToString(cc) + " " + spaceColor->getName());
+    gSpaceColorGroup.add(gBtnEffSwtich[19].getParameter());
     gSpaceColorGroup.add(gSpaceColorSpeed.setup("Speed", 1, 0, 5)->getParameter());
     gSpaceColorGroup.add(gSpaceColorOpacity.setup("Opacity", 0.1, 0, 1)->getParameter());
-    gui.add(&gBtnEffSwtich[19]);
-    gui.add(gSpaceColorGroup);
+    //gui.add(&gBtnEffSwtich[19]);
 
+    cc++;
     // 20- Dither
-    gDitherGroup.setName(dither->getName() + " GROUP");
+    gDitherGroup.setName(ofToString(cc) + " " + dither->getName());
+    gDitherGroup.add(gBtnEffSwtich[20].getParameter());
     gDitherGroup.add(gDitherScale.setup("Scale", 1, 0, 1)->getParameter());
-    gui.add(&gBtnEffSwtich[20]);
-    gui.add(gDitherGroup);
+    //gui.add(&gBtnEffSwtich[20]);
 
+    cc++;
     // 21- Color Invert Strobber
-    gStrobberGroup.setName(strobber->getName() + " GROUP");
+    gStrobberGroup.setName(ofToString(cc) + " " + strobber->getName());
+    gStrobberGroup.add(gBtnEffSwtich[21].getParameter());
     gStrobberGroup.add(gStrobberVolume.setup("Volume", 1, 0, 1)->getParameter());
     gStrobberGroup.add(gStrobberPhase.setup("Phase", 0.15, 0, 1)->getParameter());
-    gui.add(&gBtnEffSwtich[21]);
-    gui.add(gStrobberGroup);
+    //gui.add(&gBtnEffSwtich[21]);
 
-
+    cc++;
     // 22- Rimblight Pass
-    gRimbLightGroup.setName(rimbShift->getName() + " GROUP");
+    gRimbLightGroup.setName(ofToString(cc) + " " + rimbShift->getName());
+    gRimbLightGroup.add(gBtnEffSwtich[22].getParameter());
     gRimbLightGroup.add(gRimbCol.setup("Light Color", glm::vec3(2.9, 1.3, 1.3), glm::vec3(0.0), glm::vec3(3.0))->getParameter());
     gRimbLightGroup.add(gRimbThres.setup("Intensity", 64, 0, 512)->getParameter());
-    gui.add(&gBtnEffSwtich[22]);
+    //gui.add(&gBtnEffSwtich[22]);
+
+    cc++;
+    // 23- DOF Pass
+    gDofGroup.setName(ofToString(cc) + " " + dof->getName());
+    gDofGroup.add(gBtnEffSwtich[23].getParameter());
+    gDofGroup.add(gDofAperture.setup("Aperture", 0.8, 0.0, 1.0)->getParameter());
+    gDofGroup.add(gDofFocus.setup("Focus", 0.985, 0.0, 1.0)->getParameter());
+    gDofGroup.add(gDofMaxBlur.setup("Max Blur", 0.6, 0.0, 1.0)->getParameter());
+    //gui.add(&gBtnEffSwtich[23]);
+
+
+
+    // Add all Parameter groups line by line
+    gui.add(gFxaaGroup);
+    gui.add(gBloomGroup);
+    gui.add(gKaliGroup);
+    gui.add(gNoiseWrapGroup);
+    gui.add(gPixelateGroup);
+    gui.add(gGodRaysGroup);
+    gui.add(gLimb);
+    gui.add(gSsaoGroup);
+    gui.add(gZoomBlurGroup);
+    gui.add(gRGBGroup);
+    gui.add(gFilmGrainGroup);
+    gui.add(gDotScreenGroup);
+    gui.add(gGlicthGroup);
+    gui.add(gBadTVGroup);
+    gui.add(gcolorACESGroup);
+    gui.add(gNoiseGroup);
+    gui.add(gTiltShiftGroup);
+    gui.add(gSupGroup);
+    gui.add(gGliAutoGroup);
+    gui.add(gSpaceColorGroup);
+    gui.add(gDitherGroup);
+    gui.add(gStrobberGroup);
     gui.add(gRimbLightGroup);
+    gui.add(gDofGroup);
 
 
     // 24- Fog Filter Pass
-    /*gFogGroup.setName(fogFilter->getName() + " GROUP");
+    /*gFogGroup.setName(fogFilter->getName());
     gFogGroup.add(gFogfogStart.setup("Fog Start", 0, 0, 2000)->getParameter());
     gFogGroup.add(gFogfogEnd.setup("Fog End", 10, 0, 2000)->getParameter());
     gFogGroup.add(gFogfogColor.setup("Fog Color", glm::vec4(0,0,0,1), glm::vec4(0,0,0,0), glm::vec4(1,1,1,1))->getParameter());
@@ -682,11 +764,39 @@ void ofxPostProcessingManager::setupGui(){
 
     // 26-
     gui.minimizeAll();
+
+
+    // GUI LISTENERS
     gdisableAll.addListener(this, &ofxPostProcessingManager::gdisableAllHandler);
     btnLoad.addListener(this,&ofxPostProcessingManager::loadPreset);
     btnSave.addListener(this,&ofxPostProcessingManager::savePresetPressed);
 
     gdisableAllHandler();
+
+    for (int i = 0; i < gui.getNumControls(); ++i) {
+        //ofLogNotice(gui.getControlNames()[i]);
+    }
+    //ofAddListener(gui.getParameter().castGroup().parameterChangedE(), this, &ofxPostProcessingManager::paramChangedEvent);
+
+
+    // GUI STYLING
+    gui.getControl("SAVE PRESET")->setFillColor(ofColor(0,255,0,155)); // Check box fill color
+    gui.getControl("SAVE PRESET")->setBackgroundColor(ofColor(0,0,0,150)); // bg overall
+    //gui.getControl("SAVE PRESET")->setHeaderBackgroundColor(ofColor(0,0,0,150)); // Not working for ofParameter
+
+    //ofLogNotice() << "verbose function " << gui.getGroup(dof->getName()).getFillColor();
+/*    gui.getGroup(dof->getName()).setBackgroundColor(ofColor(0,200,0,150)); // bg overall
+    gui.getGroup(dof->getName()).setHeaderBackgroundColor(ofColor(0,200,0,150)); // Works for ofParameterGroup
+    gui.getGroup(dof->getName()).setBorderColor(ofColor(200,0,0,150));
+    //gui.getGroup(dof->getName()).setFillColor(ofColor(200,0,0,150)); // Not Working
+    gui.getGroup(dof->getName()).setDefaultFillColor(ofColor(200,0,0,150));*/
+}
+
+void ofxPostProcessingManager::paramChangedEvent(ofAbstractParameter &e) {
+    //ofLog() << e.getName() << ": " << e.getEscapedName() << " : " << e.toString();
+    //gui.getGroup()
+    //ofParameter<bool> r = e.cast<bool>();
+    //gui.getGroup(e.getEscapedName()).setHeaderBackgroundColor(ofColor(0,200,0,150)); // Works for ofParameterGroup
 }
 
 //---------------------------------------------------------------------------------------

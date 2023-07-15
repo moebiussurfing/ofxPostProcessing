@@ -40,12 +40,12 @@ namespace itg
     public:
         typedef shared_ptr<LimbDarkeningPass> Ptr;
         
-        LimbDarkeningPass(const ofVec2f& aspect,
+        LimbDarkeningPass(const glm::vec2& aspect,
                           bool arb,
                           float radialScale = 1.2,
                           float brightness = 2.5,
-                          const ofVec3f & startColor = ofVec3f(1.0,1.0,1.0),
-                          const ofVec3f & endColor = ofVec3f(1.0,1.0,1.0));
+                          const glm::vec3 & startColor = glm::vec3(1.0,1.0,1.0),
+                          const glm::vec3 & endColor = glm::vec3(1.0,1.0,1.0));
         
         void render(ofFbo& readFbo, ofFbo& writeFbo);
         
@@ -55,15 +55,15 @@ namespace itg
         void setBrightness(float val) { brightness = val; }
         float getBrightness() { return brightness; }
         
-        void setStartColor(const ofVec3f & val) { startColor = val; }
-        const ofVec3f getStartColor() { return startColor; }
+        void setStartColor(const glm::vec3 & val) { startColor = val; }
+        const glm::vec3 getStartColor() { return startColor; }
         
-        void setEndColor(const ofVec3f & val) { endColor = val; }
-        const ofVec3f getEndColor() { return endColor; }
+        void setEndColor(const glm::vec3 & val) { endColor = val; }
+        const glm::vec3 getEndColor() { return endColor; }
     private:
         ofShader shader;
-        ofVec3f startColor;
-        ofVec3f endColor;
+        glm::vec3 startColor;
+        glm::vec3 endColor;
         float radialScale;
         float brightness;
     };
